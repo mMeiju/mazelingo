@@ -10,6 +10,10 @@ export const MODEL_OPTIONS: readonly ModelOption[] = [
     value: "local/auto",
   },
   {
+    label: { en: "Local – PLaMo-3 Translate 0.8B", ja: "ローカル – PLaMo-3 翻訳 0.8B" },
+    value: "local/pfnet/plamo-3-translate-0.8b-GGUF",
+  },
+  {
     label: { en: "Local LLM – Qwen 2.5 7B", ja: "ローカルLLM – Qwen 2.5 7B" },
     value: "local/qwen2.5-7b-instruct",
   },
