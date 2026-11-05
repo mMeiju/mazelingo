@@ -9,6 +9,8 @@ export interface ProviderEntry {
   readonly apiKeyKey?: string;
   readonly stripPrefix?: string;
   readonly headers?: Readonly<Record<string, string>>;
+  /** If true, an API key is not required (e.g. local llama-server). */
+  readonly noApiKey?: boolean;
 }
 
 export const LLM_REGISTRY: Record<string, ProviderEntry> = {
@@ -31,6 +33,19 @@ export const LLM_REGISTRY: Record<string, ProviderEntry> = {
   gpt: {
     baseUrl: "https://api.openai.com/v1/chat/completions",
     format: "openai",
+  },
+  /**
+   * Local llama.cpp llama-server (OpenAI-compatible API).
+   * Default endpoint: http://127.0.0.1:8080/v1/chat/completions
+   * No API key is required; the model name after "local/" is passed as-is
+   * (use "auto" to let the server pick the loaded model).
+   * Example models: "local/auto", "local/qwen2.5-7b", "local/llama3.2-3b"
+   */
+  "local/": {
+    baseUrl: "http://127.0.0.1:8080/v1/chat/completions",
+    format: "openai",
+    noApiKey: true,
+    stripPrefix: "local/",
   },
   o: {
     apiKeyKey: "gpt",

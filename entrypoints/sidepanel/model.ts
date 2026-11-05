@@ -84,7 +84,12 @@ export function renderApiKeyFields(
   const seen = new Set<string>();
   models.forEach((model) => {
     const prefix = getProviderPrefix(model);
-    const apiKeyKey = prefix === null ? null : (LLM_REGISTRY[prefix]?.apiKeyKey ?? prefix);
+    const entry = prefix === null ? null : LLM_REGISTRY[prefix];
+    // Skip providers that don't need an API key (e.g. local llama-server)
+    if (entry?.noApiKey) {
+      return;
+    }
+    const apiKeyKey = prefix === null ? null : (entry?.apiKeyKey ?? prefix);
     if (apiKeyKey === null || seen.has(apiKeyKey)) {
       return;
     }

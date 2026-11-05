@@ -17,6 +17,7 @@ interface FormatHandler {
     baseUrl: string,
     schema: unknown,
     extraHeaders?: Readonly<Record<string, string>>,
+    noApiKey?: boolean,
   ) => LLMRequest;
   parse: (data: unknown) => unknown;
 }
@@ -98,6 +99,7 @@ function buildOpenAIRequest(
   baseUrl: string,
   schema: unknown,
   extraHeaders: Readonly<Record<string, string>> = {},
+  noApiKey = false,
 ): LLMRequest {
   const body: Record<string, unknown> = { messages, model: modelName };
   if (schema !== undefined) {
@@ -106,12 +108,16 @@ function buildOpenAIRequest(
       type: "json_schema",
     };
   }
+  // For local providers (e.g. llama-server) no Authorization header is needed.
+  const authHeaders: Record<string, string> = noApiKey
+    ? {}
+    : { Authorization: `Bearer ${apiKey}` };
   return {
     options: {
       body: JSON.stringify(body),
       headers: {
-        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
+        ...authHeaders,
         ...extraHeaders,
       },
       method: "POST",
@@ -262,6 +268,7 @@ export function buildLLMRequest(
     provider.entry.baseUrl,
     schema,
     provider.entry.headers,
+    provider.entry.noApiKey,
   );
 }
 

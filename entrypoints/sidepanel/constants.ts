@@ -4,6 +4,19 @@ export type ModelOption = string | { label: { en: string; ja: string }; value: s
 
 export const MODEL_OPTIONS: readonly ModelOption[] = [
   { label: { en: "(none)", ja: "（なし）" }, value: "" },
+  // Local llama-server (llama.cpp / OpenAI-compatible, no API key required)
+  {
+    label: { en: "Local LLM – auto (llama-server)", ja: "ローカルLLM – auto (llama-server)" },
+    value: "local/auto",
+  },
+  {
+    label: { en: "Local LLM – Qwen 2.5 7B", ja: "ローカルLLM – Qwen 2.5 7B" },
+    value: "local/qwen2.5-7b-instruct",
+  },
+  {
+    label: { en: "Local LLM – Llama 3.2 3B", ja: "ローカルLLM – Llama 3.2 3B" },
+    value: "local/llama-3.2-3b-instruct",
+  },
   // GLM
   "glm-4.5",
   "glm-4.5-air",
