@@ -86,7 +86,9 @@ function buildFallbackChain(
       continue;
     }
     const apiKeyKey = provider.entry.apiKeyKey ?? provider.prefix;
-    const apiKey = apiKeys[apiKeyKey];
+    // noApiKey providers (e.g. local llama-server) don't need an API key.
+    // Use an empty string as a placeholder so the request still goes through.
+    const apiKey = provider.entry.noApiKey ? "" : apiKeys[apiKeyKey];
     if (apiKey === undefined) {
       console.log(`[mlg:llm] skipping ${modelName} (no API key for "${provider.prefix}")`);
       continue;

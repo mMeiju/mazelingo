@@ -11,6 +11,7 @@ import {
 import type { Config } from "./config";
 import type { TranslationCache } from "./cache";
 import type { IndexedBlock, TranslationBlock, TranslationUnit } from "./messages";
+import { hasPlamoModel, plamoTranslateBatch } from "./plamo-translate";
 
 export interface TranslateDeps {
   getConfig(): Promise<Config>;
@@ -196,6 +197,12 @@ export async function translateUncached(
   deps: Readonly<TranslateDeps>,
   config: Readonly<ReadonlyConfig>,
 ): Promise<ReadonlyArray<ReadonlyTranslationBlock | null>> {
+  // PLaMo-3 (翻訳専用モデル) は JSON スキーマ出力に対応していないため、
+  // 1 文ずつ翻訳する専用パスを使う。
+  if (hasPlamoModel(config.models)) {
+    return plamoTranslateBatch(blocks, fromName, toName, config);
+  }
+
   const expected = blocks.map((_, index) => index);
   const indexedBlocks = blocks.map((htmlBlock, i) => ({ html: htmlBlock.html, i }));
   const outcome = await batchTranslate(indexedBlocks, expected, fromName, toName, deps, config);
